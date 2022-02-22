@@ -15,62 +15,24 @@ class Array
     list* arr;
 
 public:
-    Array(int size)
-    {
-        this->size = size;
-        arr = new list[size];
-    }
-
-    void resize(int new_size)
-    {
-        list* arr2 = new list[new_size];
-        int count = 0;
-        int b = sqrt(size) - 1;
-        for(int i = 0; i < this->size; i++)
-        {
-            arr2[i + count].a = arr[i].a;
-            if (i == b)
-            {
-                b = b + sqrt(size);
-                count++;
-            }
-        }
-        this->size = new_size;
-        delete[] arr;
-        arr = arr2;
-    }
-
-    void add(int pos, int value)
-    {
-        arr[pos].a = value;
-    }
-
-    void del(int pos)
-    {
-        arr[pos].a = 0;
-    }
-
-    void deleteArray()
-    {
-        delete[] arr;
-    }
-
-    void print()
-    {
-        int count = 1;
-        for(int i = 0; i < size; i++)
-        {
-            if (i == sqrt(size) * count)
-            {
-                std:: cout << std::endl;
-                count++;
-            }
-            std::cout << arr[i].a << " ";
-        }
-        std::cout << std::endl;
-    }
-    int getSize()
-    {
-        return this->size;
-    }
+    //Конструктор
+    Array(int size);
+    //Увеличение размера при добавлении вершины
+    void resize(int new_size);
+    //Уменьшение размера при удалении вершины
+    void resizeDel(int new_size);
+    //Добавление значения
+    void add(int i, int j, int value);
+    //Удаление значения
+    void del(int pos);
+    //Удаление массива
+    void deleteArray();
+    //Вывод в виде матрицы
+    void print();
+    //Вывод в иде одномерного массива
+    void printArray();
+    //Получение значения
+    int getValue(int i, int j);
+    //Получение размера
+    int getSize();
 };
