@@ -1,8 +1,17 @@
 #pragma once
 #include <iostream>
+#include <stack>
+#include <queue>
 #include "array.h"
+#include <list>
+
+
 
 using namespace std;
+using List = std::list<int>;
+using ArcStack = std::stack<int>;
+using ArcQueue = std::queue<Array*>;
+using VertexQueue = std::queue<Array>;
 
 class graph {
 private:
@@ -15,6 +24,10 @@ private:
     bool isMassEmpty(int* mas);
     int findLast(int* mas);
     void printMass(int* mas);
+    List fillUnmarkedVertex();
+    void markVertex(List &list, int vertex);
+    bool isMarkedVertex(List list, int vertex);
+    void dfsStart(List &markedVertex, int vertex, Array &markedArcs, ArcStack &arcs);
 
 public:
     graph(Array matrix) : matrix(matrix) {
@@ -39,7 +52,9 @@ public:
     //обход в глубину
     void dfs(int height);
     //Получение дуг из вершины
-    int* getRelated(int vertex);
+    void getRelated(int vertex, ArcStack &arcs);
+    //Существует ли такая вершина
+    bool searchVertex(int vertex);
     //Алгоритм Флойда
     void FloydAlgorithm();
 
