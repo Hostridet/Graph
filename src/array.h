@@ -35,4 +35,6 @@ public:
     int getValue(int i, int j);
     //Получение размера
     int getSize();
+    int getValueMas(int i);
+    void setValue(int i, int value);
 };

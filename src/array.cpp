@@ -102,3 +102,11 @@ int Array::getSize()
     return this->size;
 }
 
+int Array::getValueMas(int i) {
+    return this->arr[i].a;
+}
+
+void Array::setValue(int i, int value) {
+    this->arr[i].a = value;
+}
+

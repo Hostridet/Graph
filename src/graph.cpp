@@ -48,108 +48,113 @@ int graph::delArc(int first, int second)
 void graph::print() {
     cout << "-----------------------------------------------------" << endl;
     cout << "Количество вершин: " << this->vertexCount << endl;
-    cout << "Количество дуг: " << this->arcCount << endl;
     cout << "Матрица смежности: " << endl;
     this->matrix.print();
     cout << endl;
     cout << "-----------------------------------------------------" << endl;
 }
 
-//Функции для обхода
-bool graph::isMassEmpty(int* mas)
-{
-    bool flag = true;
-    for(int i = 0; i < vertexCount; i++)
-    {
-        if (mas[i] != 0)
-            flag = false;
-    }
-    return flag;
-}
 
-//Функции для обхода
-int graph::findLast(int *mas)
-{
-    int value = 0;
-    for (int i = 0; i < vertexCount; i++)
-    {
-        if (mas[i] != 0)
-            value = i;
-    }
-    return value;
-}
 
 //Функции для обхода
 void graph::printMass(int *mas)
 {
-    cout << "обход" << endl;
-    cout << "{ ";
     for (int i = 0; i < vertexCount; i++)
     {
-        //if (mas[i] != -1)
-            cout  << mas[i] << " ";
+        if (mas[i] == -1)
+            cout  << i + 1 << " ";
     }
-    cout << "}" << endl;
+    cout << endl;
 }
 //Функции для обхода
-void graph::getRelated(int vertex, ArcStack &arcs)
+int* graph::getRelated(int vertex)
 {
+    int* mas = new int[vertexCount];
     if (vertex <= vertexCount)
     {
         for (int i = 0; i < vertexCount; i++)
         {
-            if((matrix.getValue(vertex, i) != 0))
-            {
-                arcs.(matrix.getValue(vertex, i));
-            }
+           mas[i] = matrix.getValue(vertex,i + 1);
+        }
+
+    }
+    return mas;
+}
+// ------------------------- Функции для вершин ------------------------------
+//Создание масивва непомеченных вершин
+int* graph::fillUnmarkedVertex() {
+   int* mas = new int[vertexCount];
+   for (int i = 0; i < vertexCount; i++)
+       mas[i] = i + 1;
+   return mas;
+}
+
+//Помечаем вершину пройденой
+void graph::markVertex(int* &mas, int vertex) {
+    mas[vertex - 1] = -1;
+}
+
+//Проверяемм пройдена ли вершина
+bool graph::isMarkedVertex(int* mas, int vertex) {
+    if (mas[vertex - 1] == -1)
+        return true;
+    return false;
+}
+// -----------------------------------------------------------------------------
+// ------------------------- Функции для дуг -----------------------------------
+// Пометить дугу как пройденную
+void graph::markArc(Array &mas, int vertex, int index) {
+    mas.add(vertex, index + 1, 0);
+}
+
+// Заполняем неполмеченные дуги из вершины vertex
+void graph::fillUnmarkedArcs(Array &mas, int vertex) {
+    for (int i = 0; i < vertexCount; i++)
+    {
+        if (matrix.getValue(vertex, i + 1) != 0)
+            mas.add(vertex, i + 1, 1);
+    }
+}
+
+void graph::printArcs(Array mas, int vertex) {
+    int count = 1;
+    for (int i = 0; i < vertexCount * vertexCount; i++)
+    {
+        if (mas.getValueMas(i) == 1)
+        {
+            int first = (i + 1) % vertexCount;
+            int second = (i + 1) / vertexCount;
+            cout << second + 1 << " >> " << first << endl;
+        }
+    }
+}
+
+bool graph::isEmpty(Array mas) {
+    for (int i = 0; i < vertexCount * vertexCount; i++) {
+        if (mas.getValueMas(i) == 1)
+            return false;
+    }
+    return true;
+
+}
+
+int graph::getFirstValue(Array &mas) {
+    for (int i = 0; i < vertexCount * vertexCount; i++)
+    {
+        if (mas.getValueMas(i) == 1)
+        {
+            mas.setValue(i, 0);
+            if (i < vertexCount)
+                return i + 1;
+            else
+                return (i + 1) / vertexCount;
         }
 
     }
 }
 
-List graph::fillUnmarkedVertex() {
-    List list;
-    for (int i = 0; i < vertexCount; i++)
-    {
-        list.push_back(i + 1);
-    }
-    return list;
-}
+// -----------------------------------------------------------------------------
 
-void graph::markVertex(List &list, int vertex) {
-    auto iter = list.cbegin();
-    for (int i = 0; i < vertex - 1; i ++)
-        iter++;
-    list.erase(iter);
-    auto iter2 = list.cbegin();
-    for (int i = 0; i < vertex - 1; i ++)
-        iter2++;
-    list.emplace(iter2 , -1);
-    // -1 - вершина помечена
-}
-
-bool graph::isMarkedVertex(List list, int vertex) {
-    auto iter = find_if(list.cbegin(), list.cend(), [&]( const int v ){ return 0 == ( v % vertex );});
-    if ( list.end() == iter )
-    {
-        return false;
-    }
-    return true;
-}
-void printList(List arcs) {
-    for (int n : arcs)
-    {
-        std::cout << n << "\t";
-    }
-}
-void printStack(ArcStack s)
-{
-    while (!s.empty())
-    {
-        cout << s.top() <<' ';
-        s.pop();
-    }
-}
 void graph::dfs(int vertex)
 {
     if (!searchVertex(vertex))
@@ -157,25 +162,41 @@ void graph::dfs(int vertex)
         cout << "Такая  вершина не существует" << endl;
         return;
     }
-    //Вершины с пометками
-    List markedVertex = fillUnmarkedVertex();
-//    markVertex(markedVertex, 4);
-//    isMarkedVertex(markedVertex, 8);
-//    printList(markedVertex);
+    //Создаем массив пройденных вершин
+    int* markedVertex = fillUnmarkedVertex();
+
+    //Создаем массив пройденных дуг
     Array markedArcs(vertexCount * vertexCount);
-    ArcStack arcs;
-//    markedArcs.print();
-    dfsStart(markedVertex, vertex, markedArcs, arcs);
+    dfsStart(vertex, markedVertex, markedArcs);
+    cout << "Пройденные вершины: " << endl;
+    printMass(markedVertex);
 
 }
 
-void graph::dfsStart(List &markedVertex, int vertex, Array &markedArcs, ArcStack &arcs) {
-    //Помечаем вершину
+void graph::dfsStart(int vertex, int* &markedVertex, Array &markedArcs) {
+
+
+    //Помечем вершину
     markVertex(markedVertex, vertex);
-    printList(markedVertex);
-    getRelated(vertex, arcs);
-    cout << "2323" << endl;
-    printStack(arcs);
+
+    //Создаем массив смежных вершин по дугам
+    fillUnmarkedArcs(markedArcs, vertex);
+
+    //Вывод для пользователя
+    cout << "Вершина: " << vertex << endl;
+    cout << "Множество дуг: " << endl;
+    markedArcs.print();
+
+    while (!isEmpty(markedArcs))
+    {
+        int newPos = getFirstValue(markedArcs);
+        if (!isMarkedVertex(markedVertex, newPos))
+            dfsStart(newPos, markedVertex, markedArcs);
+    }
+
+
+
+
 }
 int graph::getArcCount()
 {

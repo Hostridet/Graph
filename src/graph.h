@@ -8,10 +8,6 @@
 
 
 using namespace std;
-using List = std::list<int>;
-using ArcStack = std::stack<int>;
-using ArcQueue = std::queue<Array*>;
-using VertexQueue = std::queue<Array>;
 
 class graph {
 private:
@@ -21,13 +17,17 @@ private:
     Array matrix;
     //Количество ребер
     int arcCount;
-    bool isMassEmpty(int* mas);
-    int findLast(int* mas);
     void printMass(int* mas);
-    List fillUnmarkedVertex();
-    void markVertex(List &list, int vertex);
-    bool isMarkedVertex(List list, int vertex);
-    void dfsStart(List &markedVertex, int vertex, Array &markedArcs, ArcStack &arcs);
+    int* fillUnmarkedVertex();
+    void markVertex(int* &mas, int vertex);
+    bool isMarkedVertex(int* mas, int vertex);
+    void dfsStart(int vertex, int* &markedVertex, Array &markedArcs);
+    int* getRelated(int vertex);
+    void fillUnmarkedArcs(Array &mas, int vertex);
+    void markArc(Array &mas, int vertex, int index);
+    void printArcs(Array mas, int vertex);
+    bool isEmpty(Array mas);
+    int getFirstValue(Array &mas);
 
 public:
     graph(Array matrix) : matrix(matrix) {
@@ -51,8 +51,6 @@ public:
     int getArcCount();
     //обход в глубину
     void dfs(int height);
-    //Получение дуг из вершины
-    void getRelated(int vertex, ArcStack &arcs);
     //Существует ли такая вершина
     bool searchVertex(int vertex);
     //Алгоритм Флойда
