@@ -8,7 +8,6 @@ int main() {
     graph1.addVertex(4);
     graph1.addArc(1, 2, 2);
     graph1.addArc(1, 3, 3);
-    graph1.addArc(1, 4, 9);
     graph1.addArc(2, 1, 6);
     graph1.addArc(2, 3, 3);
     graph1.addArc(2, 4, 2);
@@ -21,7 +20,8 @@ int main() {
 
     graph1.print();
     graph1.FloydAlgorithm();
-    graph1.dfs(2);
+    graph1.print();
+    graph1.dfs(1);
     return 0;
 }
 

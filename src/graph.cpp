@@ -147,7 +147,7 @@ int graph::getFirstValue(Array &mas) {
             if (i < vertexCount)
                 return i + 1;
             else
-                return (i + 1) / vertexCount;
+                return (i  %  vertexCount) + 1;
         }
 
     }
