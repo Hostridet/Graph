@@ -13,18 +13,32 @@ int graph::addVertex(int count = 1)
 
 int graph::delVertex(int count)
 {
-    for (int i = 0; i < count; i++)
+    if (count > 0 && count <= vertexCount)
     {
-        this->vertexCount--;
-        this->matrix.resizeDel(vertexCount * vertexCount);
+        for (int i = 0; i < count; i++)
+        {
+            this->vertexCount--;
+            this->matrix.resizeDel(vertexCount * vertexCount);
+        }
     }
+    else if (count > vertexCount)
+        this->vertexCount = 0;
+        this->matrix.resizeDel(0);
 }
 
-bool graph::searchVertex(int vertex) {
+void graph::searchVertex(int vertex) {
     if (vertex <= vertexCount && vertex > 0)
-        return true;
+    {
+        cout << "Вершина: " << vertex << endl;
+        cout << "[ ";
+        for (int i = 0; i < vertexCount; i++)
+        {
+            cout << matrix.getValue(vertex, i + 1) << " ";
+        }
+        cout << "]" << endl;
+    }
     else
-        return false;
+        cout << "Поиск: вершина " << vertex <<" не существует" << endl;
 }
 
 int graph::addArc(int first, int second, int value)
@@ -157,7 +171,7 @@ int graph::getFirstValue(Array &mas) {
 
 void graph::dfs(int vertex)
 {
-    if (!searchVertex(vertex))
+    if (!(vertex <= vertexCount && vertex > 0))
     {
         cout << "Такая  вершина не существует" << endl;
         return;

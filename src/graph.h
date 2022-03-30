@@ -51,8 +51,8 @@ public:
     int getArcCount();
     //обход в глубину
     void dfs(int height);
-    //Существует ли такая вершина
-    bool searchVertex(int vertex);
+    //Поиск вершины и вывод всех ёё дуг
+    void searchVertex(int vertex);
     //Алгоритм Флойда
     void FloydAlgorithm();
 

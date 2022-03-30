@@ -21,7 +21,9 @@ int main() {
     graph1.print();
     graph1.FloydAlgorithm();
     graph1.print();
-    graph1.dfs(1);
+    graph1.dfs(0);
+    graph1.print();
+    graph1.searchVertex(1);
     return 0;
 }
 
