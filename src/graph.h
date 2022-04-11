@@ -1,14 +1,9 @@
 #pragma once
 #include <iostream>
-#include <stack>
-#include <queue>
 #include "array.h"
-#include <list>
-
 
 
 using namespace std;
-
 class graph {
 private:
     //Колиичество вершин
@@ -28,6 +23,7 @@ private:
     void printArcs(Array mas, int vertex);
     bool isEmpty(Array mas);
     int getFirstValue(Array &mas);
+    bool findCycle(Array resultMatrix);
 
 public:
     graph(Array matrix) : matrix(matrix) {
@@ -48,8 +44,6 @@ public:
     //Получение количества вершин
     int getVertexCount();
     //Получение количества дуг
-    int getArcCount();
-    //обход в глубину
     void dfs(int height);
     //Поиск вершины и вывод всех ёё дуг
     void searchVertex(int vertex);

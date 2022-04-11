@@ -2,10 +2,9 @@
 
 #include <cmath>
 
-
 struct list
 {
-    int a = 0;
+    int a = 999;
     list* next;
 };
 

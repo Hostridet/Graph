@@ -9,21 +9,20 @@ int graph::addVertex(int count = 1)
         this->vertexCount++;
         this->matrix.resize(vertexCount * vertexCount);
     }
+    for (int i = 0; i < vertexCount+1; i++)
+        for (int k = 0; k < vertexCount+1; k++)
+            if (k == i)
+                matrix.add(i,k,0);
 }
 
 int graph::delVertex(int count)
 {
-    if (count > 0 && count <= vertexCount)
-    {
+    if (vertexCount  > 0)
         for (int i = 0; i < count; i++)
         {
             this->vertexCount--;
             this->matrix.resizeDel(vertexCount * vertexCount);
         }
-    }
-    else if (count > vertexCount)
-        this->vertexCount = 0;
-        this->matrix.resizeDel(0);
 }
 
 void graph::searchVertex(int vertex) {
@@ -125,7 +124,7 @@ void graph::markArc(Array &mas, int vertex, int index) {
 void graph::fillUnmarkedArcs(Array &mas, int vertex) {
     for (int i = 0; i < vertexCount; i++)
     {
-        if (matrix.getValue(vertex, i + 1) != 0)
+        if (matrix.getValue(vertex, i + 1) != 999 && matrix.getValue(vertex, i + 1) != 0)
             mas.add(vertex, i + 1, 1);
     }
 }
@@ -188,8 +187,6 @@ void graph::dfs(int vertex)
 }
 
 void graph::dfsStart(int vertex, int* &markedVertex, Array &markedArcs) {
-
-
     //Помечем вершину
     markVertex(markedVertex, vertex);
 
@@ -207,14 +204,14 @@ void graph::dfsStart(int vertex, int* &markedVertex, Array &markedArcs) {
         if (!isMarkedVertex(markedVertex, newPos))
             dfsStart(newPos, markedVertex, markedArcs);
     }
-
-
-
-
 }
-int graph::getArcCount()
-{
-    return this->arcCount;
+
+bool graph::findCycle(Array resultMatrix) {
+    for (int i = 0; i < vertexCount + 1; i++)
+        for (int k = 0; k < vertexCount + 1; k++)
+            if (i == k && resultMatrix.getValue(i,k) < 0)
+                return true;
+    return false;
 }
 
 void graph::FloydAlgorithm()
@@ -226,20 +223,21 @@ void graph::FloydAlgorithm()
     Array resultMatrix(vertexCount * vertexCount);
     resultMatrix = matrix;
     resultMatrix.print();
-
-    for(int k = 0; k < vertexCount; k++)
+    for(int k = 0; k < vertexCount; ++k)
     {
-        for(int i = 0; i < vertexCount; i++)
+        for(int i = 0; i < vertexCount; ++i)
         {
-            for(int j = 0; j < vertexCount; j++)
+            for(int j = 0; j < vertexCount; ++j)
             {
-                if (resultMatrix.getValue(k + 1, j + 1) != 0 && resultMatrix.getValue(i + 1, k + 1) != 0 && resultMatrix.getValue(i + 1, j + 1) != 0)
+                if (resultMatrix.getValue(k + 1, j + 1) < 999 && resultMatrix.getValue(i + 1, k + 1) < 999)
                     resultMatrix.add(i + 1, j + 1, min(resultMatrix.getValue(k + 1, j + 1) + resultMatrix.getValue(i + 1, k + 1), resultMatrix.getValue(i + 1, j + 1)));
             }
         }
     }
 
     cout << "Матрица смежности после алгоримта Флойда: " << endl;
+    if (findCycle(resultMatrix))
+        cout << "Обнаружен отрицательный цикл" << endl;
     resultMatrix.print();
     cout << "-----------------------------------------------------" << endl;
 

@@ -24,6 +24,7 @@ void Array::resize(int new_size)
         }
         this->size = new_size;
         delete[] arr;
+
         arr = arr2;
     }
 }
@@ -33,7 +34,7 @@ void Array::resizeDel(int new_size)
     list* arr2 = new list[new_size];
     int count = 0;
     int b = sqrt(new_size);
-    for(int i = 0; i < this->size; i++)
+    for(int i = 0; i < new_size; i++)
     {
         if (i == b)
         {
@@ -44,6 +45,7 @@ void Array::resizeDel(int new_size)
         //std::cout << "i = " << i << " b = " << b << " arr[i] = " << arr[i].a  << " arr[i + count] = " << arr[i+count].a << std::endl;
 
     }
+
     this->size = new_size;
     delete[] arr;
     arr = arr2;
@@ -70,7 +72,10 @@ void Array::print()
                 std::cout << std::endl;
                 count++;
             }
-            std::cout << arr[i].a << " ";
+            if (arr[i].a == 999)
+                std::cout << "∞" << " ";
+            else
+                std::cout << arr[i].a << " ";
         }
         std::cout << std::endl;
     }
